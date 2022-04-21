@@ -17,7 +17,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['email', 'name', 'password']
+        fields = ['email', 'name', 'mood', 'password']
 
     def validate(self, attrs):
         name = attrs.get('name', '')
@@ -29,7 +29,6 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         return User.objects.create_user(**validated_data)
-
 
 
 class EmailVerificationSerializer(serializers.ModelSerializer):
@@ -44,6 +43,7 @@ class LoginSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(max_length=255, min_length=3)
     password = serializers.CharField(max_length=68, min_length=6, write_only=True)
     name = serializers.CharField(max_length=255, min_length=3, read_only=True)
+    mood = serializers.CharField(max_length=50)
 
     tokens = serializers.SerializerMethodField()
 
@@ -56,7 +56,7 @@ class LoginSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['email', 'password', 'name', 'tokens']
+        fields = ['email', 'password', 'name', 'mood', 'tokens']
 
     def validate(self, attrs):
         email = attrs.get('email', '')
@@ -138,4 +138,3 @@ class SetNewPasswordSerializer(serializers.Serializer):
             return (user)
         except Exception as e:
             raise AuthenticationFailed('The reset link is invalid', 401)
-        return super().validate(attrs)

@@ -59,6 +59,11 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+CORS_ORIGIN_WHITELIST = (
+    'http://localhost:3000',  # for localhost (REACT Default)
+    'http://192.168.10.45:3000', # for network
+)
+
 ROOT_URLCONF = 'musico.urls'
 
 TEMPLATES = [

@@ -43,6 +43,7 @@ class RegisterView(generics.GenericAPIView):
         user_request_data = {}
         user_request_data['email'] = data.get('email')
         user_request_data['name'] = data.get('name')
+        user_request_data['mood'] = data.get('mood')
         user_request_data['password'] = data.get('password')
         print(user_request_data)
         
@@ -113,7 +114,8 @@ class LoginAPIView(generics.GenericAPIView):
         user_data = serializer.data
         user_id = user.pk
         name = user.name
-        return Response({'user_data': user_data, 'user_id': user_id, 'email': email, 'name': name})
+        mood = user.mood
+        return Response({'user_data': user_data, 'user_id': user_id, 'email': email, 'name': name, 'mood': mood})
 
 
 class LogoutAPIView(generics.GenericAPIView):
