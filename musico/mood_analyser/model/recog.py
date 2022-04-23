@@ -16,30 +16,29 @@ class_labels = ['Angry', 'Happy', 'Neutral', 'Sad', 'Surprise']
 
 def return_mood(image_path):
 
-    cap = cv2.VideoCapture(image_path)
-    while True:
+    # cap = cv2.VideoCapture(image_path)
+    cap = cv2.imread(image_path)
 
-        ret, frame = cap.read()
-        labels = []
-        try:
-            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        except Exception as e:
-            print("Error", e)
-            return "No face detected"
-        faces = face_classifier.detectMultiScale(gray, 1.3, 5)
+    try:
+        gray = cv2.cvtColor(cap, cv2.COLOR_BGR2GRAY)
+        print(gray)
+    except Exception as e:
+        print("Error", e)
+        return "No face detected"
+    faces = face_classifier.detectMultiScale(gray, 1.3, 5)
 
-        for (x, y, w, h) in faces:
-            cv2.rectangle(frame, (x, y), (x+w, y+h), (238, 130, 238), 2)
-            roi_gray = gray[y:y+h, x:x+w]
-            roi_gray = cv2.resize(roi_gray, (48, 48),
-                                  interpolation=cv2.INTER_AREA)
+    for (x, y, w, h) in faces:
+        cv2.rectangle(cap, (x, y), (x+w, y+h), (238, 130, 238), 2)
+        roi_gray = gray[y:y+h, x:x+w]
+        roi_gray = cv2.resize(roi_gray, (48, 48),
+                                interpolation=cv2.INTER_AREA)
 
-            if np.sum([roi_gray]) != 0:
-                roi = roi_gray.astype('float')/255.0
-                roi = img_to_array(roi)
-                roi = np.expand_dims(roi, axis=0)
+        if np.sum([roi_gray]) != 0:
+            roi = roi_gray.astype('float')/255.0
+            roi = img_to_array(roi)
+            roi = np.expand_dims(roi, axis=0)
 
-                preds = list(classifier.predict(roi)[0])
+            preds = list(classifier.predict(roi)[0])
 
-                # array to be sent to the frontend
-                return preds.index(max(preds))
+            # array to be sent to the frontend
+            return preds.index(max(preds))
