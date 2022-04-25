@@ -21,11 +21,11 @@ availableGenres = [
     'synth-pop', 'tango', 'techno', 'trance', 'trip-hop', 'turkish', 'work-out', 'world-music']
 
 moodToGenre = {
-    'Angry':  ["chill", "soul", "work-out", ],
-    'Happy': ["disco", "dance", "happy", "groove", ],
-    'Neutral': ["ambient", "holidays",  "party", "pop", ],
-    'Sad': ["acoustic", "piano",  "happy", "comedy"],
-    'Surprise': ["rock-n-roll", "road-trip", "trance", "romance", ]
+    'angry':  ["chill", "soul", "work-out", ],
+    'happy': ["disco", "dance", "happy", "groove", ],
+    'neutral': ["ambient", "holidays",  "party", "pop", ],
+    'sad': ["acoustic", "piano",  "happy", "comedy"],
+    'surprise': ["rock-n-roll", "road-trip", "trance", "romance", ]
 }
 
 sp = spotipy.Spotify(
@@ -35,7 +35,7 @@ sp = spotipy.Spotify(
 
 
 def getTracksByMood(mood, limit=50):
-    genres = moodToGenre[mood]
+    genres = moodToGenre[mood.lower()]
     res = sp.recommendations(seed_genres=genres, limit=limit)
 
     tracks = res["tracks"]

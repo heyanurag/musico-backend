@@ -12,7 +12,7 @@ face_classifier = cv2.CascadeClassifier(os.path.join(
 classifier = load_model(os.path.join(
     BASE_DIR, "mood_analyser", 'model/Emotion_little_vgg.h5'))
 
-class_labels = ['Angry', 'Happy', 'Neutral', 'Sad', 'Surprise']
+class_labels = ['angry', 'happy', 'neutral', 'sad', 'surprise']
 
 def return_mood(image_path):
 

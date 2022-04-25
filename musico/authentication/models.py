@@ -29,7 +29,7 @@ class UserManager(BaseUserManager):
         user = self.create_user(
             name,
             email,
-            mood="Happy",
+            mood="happy",
             password=password,
             staff=True
         )
@@ -40,7 +40,7 @@ class UserManager(BaseUserManager):
         user = self.create_user(
             name,
             email,
-            mood="Happy",
+            mood="happy",
             password=password,
             staff=True,
             admin=True
