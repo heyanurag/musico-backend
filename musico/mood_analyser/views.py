@@ -1,5 +1,6 @@
 from rest_framework import generics, status, permissions
 from rest_framework.response import Response
+# from django.contrib.auth.models import AnonymousUser
 
 import base64
 
@@ -34,5 +35,24 @@ class MoodDetector(generics.GenericAPIView):
                     User.objects.filter(id=request.user.pk).update(mood=str(mood))
 
                 tracks = getTracksByMood(mood)
-
+ 
         return Response({"mood": mood, "tracks": tracks}, status=status.HTTP_200_OK)
+
+
+class PopularMusicByMood(generics.GenericAPIView):
+    model = User
+    permissions = (permissions.IsAuthenticated, )
+
+    def get_object(self, queryset=None):
+        obj = self.request.user
+        return obj
+
+    def get(self, request):
+        user = self.get_object()
+
+        if type(user) != User:
+            return Response({"message": "Unauthorized"}, status=status.HTTP_401_UNAUTHORIZED)
+
+        tracks = getTracksByMood(user.mood)
+ 
+        return Response({"tracks": tracks}, status=status.HTTP_200_OK)
