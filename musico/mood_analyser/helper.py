@@ -55,3 +55,12 @@ def getTracksByMood(mood, limit=50):
     random.shuffle(tracks)
 
     return tracks
+
+
+def getSearchTracks(name):
+    result = sp.search(name, limit=50)
+    
+    tracks = result["tracks"]["items"]
+    random.shuffle(tracks)
+
+    return tracks
