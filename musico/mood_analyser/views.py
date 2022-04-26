@@ -68,19 +68,31 @@ class SearchTracks(generics.GenericAPIView):
         return obj
 
     def get(self, request):
+        default_moods = ['angry', 'happy', 'neutral', 'sad', 'surprise', "all"]
         user = self.get_object()
 
         if type(user) != User:
             return Response({"message": "Unathorized"}, status=status.HTTP_401_UNAUTHORIZED)
 
         searchQuery = request.query_params.get("searchQuery")
-        
+        mood = request.query_params.get("mood")
+
+        messages = []
         if not searchQuery or not isinstance(searchQuery, str):
-            return Response({"message": "searchQuery is required"}, status=status.HTTP_400_BAD_REQUEST)
-        
-        if len(searchQuery) < 3:
-            return Response({"message": "searchQuery length must be greater than or equal to 3 characters"}, status=status.HTTP_400_BAD_REQUEST)
- 
+            messages.append("searchQuery is required")
+
+        if isinstance(searchQuery, str) and len(searchQuery) < 3:
+            messages.append("searchQuery length must be greater than or equal to 3 characters")
+
+        # if not mood or not isinstance(mood, str):
+        #     messages.append("mood is required")
+
+        # if isinstance(mood, str) and mood not in default_moods:
+        #     messages.append(f"mood must be from this {','.join(default_moods)}")
+
+        if len(messages) > 0:
+            return Response({"message": ", ".join(messages)}, status=status.HTTP_400_BAD_REQUEST)
+
         tracks = getSearchTracks(searchQuery)
 
         return Response({"tracks": tracks}, status=status.HTTP_200_OK)

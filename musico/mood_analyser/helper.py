@@ -1,5 +1,6 @@
 
 from random import shuffle
+import urllib
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 from decouple import config
@@ -57,9 +58,17 @@ def getTracksByMood(mood, limit=50):
     return tracks
 
 
-def getSearchTracks(name):
-    result = sp.search(name, limit=50)
-    
+def getSearchTracks(name, mood="all"):
+
+    if mood == "all":
+        query = name
+    else:
+        genres = moodToGenre[mood.lower()]
+        query = urllib.parse.quote(f'''{name} genre:{",".join(genres)}''')
+
+    result = sp.search(query, limit=50)
+    # result = sp.search(name, limit=50)
+
     tracks = result["tracks"]["items"]
     random.shuffle(tracks)
 
