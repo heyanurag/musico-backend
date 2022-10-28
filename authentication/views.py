@@ -71,7 +71,7 @@ class RegisterView(generics.GenericAPIView):
 class VerifyEmail(views.APIView):
     serializer_class = EmailVerificationSerializer
     def get(self, request):
-        redirect_url = "http://localhost:3000/login"  # Change Base URL before deployment
+        redirect_url = f"{config('REDIRECT_BASE_URL')}/login"  # Change Base URL before deployment
         token = request.GET.get('token')
         try:
             payload = jwt.decode(
@@ -175,7 +175,7 @@ class RequestPasswordResetEmail(generics.GenericAPIView):
                 'password-reset-confirm', kwargs={'uidb64': uidb64, 'token': token})
 
             # Change Base URL before deployment
-            redirect_url = "http://localhost:3000/reset-password"
+            redirect_url = f"{config('REDIRECT_BASE_URL')}/reset-password"
             absurl = 'http://'+current_site + relativeLink
             email_body = 'Hello, \n Use link below to reset your password  \n' + \
                 absurl+"?redirect_url="+redirect_url
