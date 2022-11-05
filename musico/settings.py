@@ -25,16 +25,21 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = config('SECRET_KEY')
 
-# SECURITY WARNING: don't run with debug turned on in production!
+PYTHON_ENV = config('PYTHON_ENV')
+
 DEBUG = True
 
-ALLOWED_HOSTS = []
+if PYTHON_ENV == 'PRODUCTION':
+    DEBUG = False
+
+ALLOWED_HOSTS = ['127.0.0.1', '.railway.app']
 
 AUTH_USER_MODEL = 'authentication.User'
 
 # Application definition
 
 INSTALLED_APPS = [
+  	'whitenoise.runserver_nostatic',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -43,13 +48,16 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'corsheaders',
 
+    'authentication',
+    'mood_analyser',
+
     'rest_framework_simplejwt.token_blacklist',
     'rest_framework',
-    'authentication'
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -62,6 +70,7 @@ MIDDLEWARE = [
 CORS_ORIGIN_WHITELIST = (
     config('REDIRECT_BASE_URL'),  # for localhost (REACT Default)
     'http://192.168.10.45:3000', # for network
+    'https://musicoo.netlify.app'
 )
 
 ROOT_URLCONF = 'musico.urls'
@@ -88,12 +97,25 @@ WSGI_APPLICATION = 'musico.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+if PYTHON_ENV == 'DEVELOPMENT':
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
     }
-}
+
+else:
+	DATABASES = {
+		'default': {
+			'ENGINE': 'django.db.backends.postgresql_psycopg2',
+			'NAME': os.environ["PGDATABASE"],
+			'USER': os.environ["PGUSER"],
+			'PASSWORD': os.environ["PGPASSWORD"],
+			'HOST': os.environ["PGHOST"],
+			'PORT': os.environ["PGPORT"],
+		}
+	}
 
 
 REST_FRAMEWORK = {
@@ -140,7 +162,11 @@ USE_I18N = True
 USE_TZ = True
 
 
-STATIC_URL = 'static/'
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/4.0/howto/static-files/
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_URL = '/static/'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
