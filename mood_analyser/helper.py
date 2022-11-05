@@ -1,5 +1,4 @@
 
-from random import shuffle
 import urllib
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
